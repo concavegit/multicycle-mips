@@ -1,6 +1,17 @@
-TARGET=cpu
 .PHONY: all
+TARGETS=alu regfile
 
-$(TARGET):
-	verilator -cc -I../rtl $(@).v -trace -exe testbench.cpp
-	make -C obj_dir -f V$(@).mk
+default:
+	for target in $(TARGETS); do \
+		make -C $$target; \
+	done
+
+run:
+	for target in $(TARGETS); do \
+		make -C $$target run; \
+	done
+
+clean:
+	for target in $(TARGETS); do \
+		make -C $$target clean; \
+	done

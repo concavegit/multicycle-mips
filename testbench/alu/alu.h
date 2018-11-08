@@ -1,3 +1,6 @@
+/*
+  Test ALU correctness.
+ */
 #pragma once
 
 #include <cstdint>
@@ -10,4 +13,6 @@ bool checkZero(const ALUOp op, const int32_t a, const int32_t b);
 bool checkCarry(const ALUOp op, const int32_t a, const int32_t b);
 bool checkResult(const ALUOp op, const int32_t a, const int32_t b);
 bool checkOverflow(const ALUOp op, const int32_t a, const int32_t b);
-std::vector<std::tuple<const ALUOp, const int32_t, const int32_t>> genTestCases();
+bool checkAll(const ALUOp op, const int32_t a, const int32_t b);
+std::vector<std::tuple<ALUOp, int32_t, int32_t>> genTestCases();
+bool testALU();

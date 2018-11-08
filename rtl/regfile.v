@@ -30,13 +30,13 @@ module regfile
                           readAddr1,
                           writeAddr,
     input                 we,
-    Clk
+    clk
     );
 
    reg [width-1:0]        registers [depth-1:0];
    initial registers[0] = 0;
 
-   always @(posedge Clk) begin
+   always @(posedge clk) begin
       if (we && writeAddr != 0) begin
          registers[writeAddr] <= dIn;
       end
