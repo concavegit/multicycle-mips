@@ -302,6 +302,8 @@ module fsm
            memWe <= 1;
            pcWe <= 0;
            regWe <= 0;
+
+           state <= `IF;
         end
 
         `WB_JAL : begin
