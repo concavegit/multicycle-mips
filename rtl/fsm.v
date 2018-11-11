@@ -85,6 +85,7 @@ module fsm
    reg [4:0]        prevState;
    reg [4:0]        state;
 
+   // Compute the current state
    initial state = 0;
    always @(prevState, cmd) begin
       case (prevState)
@@ -121,7 +122,7 @@ module fsm
       endcase
    end
 
-   
+   // Set control signals
    always @(posedge clk) begin
       case (state)
         `IF : begin
