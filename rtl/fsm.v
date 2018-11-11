@@ -1,3 +1,9 @@
+/**
+ * Module FSM
+ * Inputs: clock (clk), equality boolean (eq), command (cmd).
+ * Outputs: Control signals for the multicycle CPU.
+ * Function: Output the control signals for the multicycle CPU.
+ */
 `define MEM_PC 0
 `define MEM_ALU_RES 1
 `define DST_RD 0

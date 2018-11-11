@@ -1,4 +1,12 @@
+/**
+ * Module Decode
+ * Inputs: instruction (instr)
+ * Outputs: rd, rs, sign extend immediate (sxi), jump address (jAddr),
+ * command (cmd).
+ * Function: Output the addresses and command for use in the CPU and FSM.
+ */
 `include "fsm.v"
+
 module decode
   (
    input [31:0]     instr,
