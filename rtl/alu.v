@@ -15,7 +15,7 @@ module alu
    (
     output reg signed [width-1:0] result,
     output                        zero,
-                                  overflow,
+    output reg                    overflow,
                                   carryout,
     input signed [width-1:0]      operandA,
                                   operandB,
