@@ -85,7 +85,6 @@ module fsm
    reg [4:0]        prevState;
    reg [4:0]        state;
 
-   // initial prevState = `IF;
    initial state = 0;
    always @(prevState, cmd) begin
       case (prevState)
@@ -125,7 +124,6 @@ module fsm
    always @(posedge clk) begin
       case (state)
         `IF : begin
-           // cmd <= cmd;
            pcSrc <= `PC_SRC_ALU;
            aluSrcA <= `ALU_SRC_A_PC;
            aluSrcB <= `ALU_SRC_B_4;
@@ -138,11 +136,6 @@ module fsm
            memWe <= 0;
            pcWe <= 1;
            regWe <= 0;
-
-           // if (cmd == `BNE || cmd == `BEQ) state <= `ID_B;
-           // else if (cmd == `J || cmd == `JAL) state <= `ID_J;
-           // else state <= `ID_X;
-
         end
 
         `ID_B : begin
@@ -156,8 +149,6 @@ module fsm
            memWe <= 0;
            pcWe <= 0;
            regWe <= 0;
-
-           // state <= (state == `BEQ) ? `EX_BEQ : `EX_BNE;
         end
 
         `ID_J : begin
@@ -172,8 +163,6 @@ module fsm
            memWe <= 0;
            pcWe <= 1;
            regWe <= 0;
-
-           // state <= (state == `J) ? `IF : `WB_JAL;
         end
 
         `ID_X : begin
@@ -183,15 +172,6 @@ module fsm
            memWe <= 0;
            pcWe <= 0;
            regWe <= 0;
-
-           // case (cmd)
-           //   `JR : state <= `EX_JR;
-           //   `SUB : state <= `EX_SUB;
-           //   `ADD : state <= `EX_ADD;
-           //   `SLT : state <= `EX_SLT;
-           //   `XORI : state <= `XORI;
-           //   default : state <= `EX_LWSWADDI;
-           // endcase
         end
 
         `EX_BEQ : begin
@@ -206,8 +186,6 @@ module fsm
            memWe <= 0;
            pcWe <= eq;
            regWe <= 0;
-
-           // state <= `IF;
         end
 
         `EX_BNE : begin
@@ -222,8 +200,6 @@ module fsm
            memWe <= 0;
            pcWe <= !eq;
            regWe <= 0;
-
-           // state <= `IF;
         end
 
         `EX_JR : begin
@@ -234,8 +210,6 @@ module fsm
            memWe <= 0;
            pcWe <= 1;
            regWe <= 0;
-
-           // state <= `IF;
         end
 
         `EX_SUB : begin
@@ -249,8 +223,6 @@ module fsm
            memWe <= 0;
            pcWe <= 0;
            regWe <= 0;
-
-           // state <= `WB_SUBADDSLT;
         end
 
         `EX_ADD : begin
@@ -264,8 +236,6 @@ module fsm
            memWe <= 0;
            pcWe <= 0;
            regWe <= 0;
-
-           // state <= `WB_SUBADDSLT;
         end
 
         `EX_SLT : begin
@@ -279,8 +249,6 @@ module fsm
            memWe <= 0;
            pcWe <= 0;
            regWe <= 0;
-
-           // state <= `WB_SUBADDSLT;
         end
 
         `EX_XORI : begin
@@ -294,8 +262,6 @@ module fsm
            memWe <= 0;
            pcWe <= 0;
            regWe <= 0;
-
-           // state <= `WB_ADDIXORI;
         end
 
         `EX_LWSWADDI : begin
@@ -309,12 +275,6 @@ module fsm
            memWe <= 0;
            pcWe <= 0;
            regWe <= 0;
-
-           // case (cmd)
-           //   `ADDI : state <= `WB_ADDIXORI;
-           //   `SW : state <= `MEM_SW;
-           //   default : state <= `MEM_LW;
-           // endcase
         end
 
         `MEM_LW : begin
@@ -326,8 +286,6 @@ module fsm
            memWe <= 0;
            pcWe <= 0;
            regWe <= 0;
-
-           // state <= `WB_LW;
         end
 
         `MEM_SW : begin
@@ -339,8 +297,6 @@ module fsm
            memWe <= 1;
            pcWe <= 0;
            regWe <= 0;
-
-           // state <= `IF;
         end
 
         `WB_JAL : begin
@@ -353,8 +309,6 @@ module fsm
            memWe <= 0;
            pcWe <= 0;
            regWe <= 1;
-
-           // state <= `IF;
         end
 
         `WB_SUBADDSLT : begin
@@ -367,8 +321,6 @@ module fsm
            memWe <= 0;
            pcWe <= 0;
            regWe <= 1;
-
-           // state <= `IF;
         end
 
         `WB_ADDIXORI : begin
@@ -381,8 +333,6 @@ module fsm
            memWe <= 0;
            pcWe <= 0;
            regWe <= 1;
-
-           // state <= `IF;
         end
 
         `WB_LW : begin
@@ -395,8 +345,6 @@ module fsm
            memWe <= 0;
            pcWe <= 0;
            regWe <= 1;
-
-           // state <= `IF;
         end
       endcase
       prevState <= state;
