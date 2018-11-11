@@ -7,16 +7,10 @@ module cputest();
       counter = 0;
    end
 
-   cpu #(.instruction("unit_tests/lw_sw.dat")) dut(clk);
+   cpu #(.instruction("unit_tests/add.dat")) dut(clk);
    always #1 clk = ~clk;
 
    always #2 begin
-      // $display("Instruction #: %d", counter);
-      // $display("pc: %d", dut.pc);
-      // $display("Active DataMemory Address: %d", dut.mem0.addr);
-      // $display("");
-      // // $display("%h, %h, %h", dut.instr, dut.pc, dut.dmOut);
-      // $display("%h", dut.regfile0.mem[0]);
       counter = counter + 1;
    end
 

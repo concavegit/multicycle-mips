@@ -1,0 +1,13 @@
+# MIPS funct codes
+0 lw
+1 sw
+2 j
+3 jr
+4 jal
+5 beq
+6 bne
+7 xori
+8 addi
+9 add
+A sub
+B slt

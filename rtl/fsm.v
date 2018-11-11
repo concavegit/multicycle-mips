@@ -82,14 +82,50 @@ module fsm
    dst
    );
 
+   reg [4:0]        prevState;
    reg [4:0]        state;
-   wire [3:0]        ffCmd;
-   assign ffCmd = cmd;
-   initial state = `IF;
+
+   // initial prevState = `IF;
+   initial state = 0;
+   always @(prevState, cmd) begin
+      case (prevState)
+        `IF :
+          if (cmd == `BNE || cmd == `BEQ) state = `ID_B;
+          else if (cmd == `J || cmd == `JAL) state = `ID_J;
+          else state = `ID_X;
+        `ID_B : state = (cmd == `BEQ) ? `EX_BEQ : `EX_BNE;
+        `ID_J : state = (cmd == `J) ? `IF : `EX_BNE;
+        `ID_X :
+          case (cmd)
+            `JR : state = `EX_JR;
+            `SUB : state = `EX_SUB;
+            `ADD : state = `EX_ADD;
+            `SLT : state = `EX_SLT;
+            default : state = `EX_LWSWADDI;
+          endcase
+
+        `EX_BEQ : state = `IF;
+        `EX_BNE : state = `IF;
+        `EX_JR : state = `IF;
+        `EX_SUB : state = `WB_SUBADDSLT;
+        `EX_ADD : state = `WB_SUBADDSLT;
+        `EX_SLT : state = `WB_SUBADDSLT;
+        `EX_XORI : state = `WB_ADDIXORI;
+        `EX_LWSWADDI :
+          if (cmd == `ADDI) state = `WB_ADDIXORI;
+          else if (cmd == `SW) state = `MEM_SW;
+          else state = `MEM_LW;
+        `MEM_LW : state = `WB_LW;
+        `MEM_SW : state = `IF;
+        default : state = `IF;
+      endcase
+   end
+
+   
    always @(posedge clk) begin
       case (state)
         `IF : begin
-           // ffCmd <= cmd;
+           // cmd <= cmd;
            pcSrc <= `PC_SRC_ALU;
            aluSrcA <= `ALU_SRC_A_PC;
            aluSrcB <= `ALU_SRC_B_4;
@@ -103,9 +139,9 @@ module fsm
            pcWe <= 1;
            regWe <= 0;
 
-           if (ffCmd == `BNE || ffCmd == `BEQ) state <= `ID_B;
-           else if (ffCmd == `J || ffCmd == `JAL) state <= `ID_J;
-           else state <= `ID_X;
+           // if (cmd == `BNE || cmd == `BEQ) state <= `ID_B;
+           // else if (cmd == `J || cmd == `JAL) state <= `ID_J;
+           // else state <= `ID_X;
 
         end
 
@@ -121,7 +157,7 @@ module fsm
            pcWe <= 0;
            regWe <= 0;
 
-           state <= (state == `BEQ) ? `EX_BEQ : `EX_BNE;
+           // state <= (state == `BEQ) ? `EX_BEQ : `EX_BNE;
         end
 
         `ID_J : begin
@@ -137,7 +173,7 @@ module fsm
            pcWe <= 1;
            regWe <= 0;
 
-           state <= (state == `J) ? `IF : `WB_JAL;
+           // state <= (state == `J) ? `IF : `WB_JAL;
         end
 
         `ID_X : begin
@@ -148,14 +184,14 @@ module fsm
            pcWe <= 0;
            regWe <= 0;
 
-           case (ffCmd)
-             `JR : state <= `EX_JR;
-             `SUB : state <= `EX_SUB;
-             `ADD : state <= `EX_ADD;
-             `SLT : state <= `EX_SLT;
-             `XORI : state <= `XORI;
-             default : state <= `EX_LWSWADDI;
-           endcase
+           // case (cmd)
+           //   `JR : state <= `EX_JR;
+           //   `SUB : state <= `EX_SUB;
+           //   `ADD : state <= `EX_ADD;
+           //   `SLT : state <= `EX_SLT;
+           //   `XORI : state <= `XORI;
+           //   default : state <= `EX_LWSWADDI;
+           // endcase
         end
 
         `EX_BEQ : begin
@@ -171,7 +207,7 @@ module fsm
            pcWe <= eq;
            regWe <= 0;
 
-           state <= `IF;
+           // state <= `IF;
         end
 
         `EX_BNE : begin
@@ -187,7 +223,7 @@ module fsm
            pcWe <= !eq;
            regWe <= 0;
 
-           state <= `IF;
+           // state <= `IF;
         end
 
         `EX_JR : begin
@@ -199,7 +235,7 @@ module fsm
            pcWe <= 1;
            regWe <= 0;
 
-           state <= `IF;
+           // state <= `IF;
         end
 
         `EX_SUB : begin
@@ -214,7 +250,7 @@ module fsm
            pcWe <= 0;
            regWe <= 0;
 
-           state <= `WB_SUBADDSLT;
+           // state <= `WB_SUBADDSLT;
         end
 
         `EX_ADD : begin
@@ -229,7 +265,7 @@ module fsm
            pcWe <= 0;
            regWe <= 0;
 
-           state <= `WB_SUBADDSLT;
+           // state <= `WB_SUBADDSLT;
         end
 
         `EX_SLT : begin
@@ -244,7 +280,7 @@ module fsm
            pcWe <= 0;
            regWe <= 0;
 
-           state <= `WB_SUBADDSLT;
+           // state <= `WB_SUBADDSLT;
         end
 
         `EX_XORI : begin
@@ -259,7 +295,7 @@ module fsm
            pcWe <= 0;
            regWe <= 0;
 
-           state <= `WB_ADDIXORI;
+           // state <= `WB_ADDIXORI;
         end
 
         `EX_LWSWADDI : begin
@@ -274,11 +310,11 @@ module fsm
            pcWe <= 0;
            regWe <= 0;
 
-           case (ffCmd)
-             `ADDI : state <= `WB_ADDIXORI;
-             `SW : state <= `MEM_SW;
-             default : state <= `MEM_LW;
-           endcase
+           // case (cmd)
+           //   `ADDI : state <= `WB_ADDIXORI;
+           //   `SW : state <= `MEM_SW;
+           //   default : state <= `MEM_LW;
+           // endcase
         end
 
         `MEM_LW : begin
@@ -291,7 +327,7 @@ module fsm
            pcWe <= 0;
            regWe <= 0;
 
-           state <= `WB_LW;
+           // state <= `WB_LW;
         end
 
         `MEM_SW : begin
@@ -304,7 +340,7 @@ module fsm
            pcWe <= 0;
            regWe <= 0;
 
-           state <= `IF;
+           // state <= `IF;
         end
 
         `WB_JAL : begin
@@ -318,7 +354,7 @@ module fsm
            pcWe <= 0;
            regWe <= 1;
 
-           state <= `IF;
+           // state <= `IF;
         end
 
         `WB_SUBADDSLT : begin
@@ -332,7 +368,7 @@ module fsm
            pcWe <= 0;
            regWe <= 1;
 
-           state <= `IF;
+           // state <= `IF;
         end
 
         `WB_ADDIXORI : begin
@@ -346,7 +382,7 @@ module fsm
            pcWe <= 0;
            regWe <= 1;
 
-           state <= `IF;
+           // state <= `IF;
         end
 
         `WB_LW : begin
@@ -360,8 +396,9 @@ module fsm
            pcWe <= 0;
            regWe <= 1;
 
-           state <= `IF;
+           // state <= `IF;
         end
       endcase
+      prevState <= state;
    end
 endmodule
