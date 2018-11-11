@@ -24,8 +24,10 @@ module memory
     )
    (
     output [width*wordSz-1:0] dOut,
+                              instrOut,
     input                     clk,
     input [31:0]              addr,
+                              instrAddr,
     input                     we,
     input [width*wordSz-1:0]  dIn
     );
@@ -42,7 +44,8 @@ module memory
            if (we)
              mem[addr+wordSz-1-i] <= dIn[i*width+:width];
 
-         assign dOut[(wordSz - i - 1) * width+:width] = mem[addr+i];
+         assign dOut[(wordSz - i - 1) * width+:width] = mem[addr+i],
+           instrOut[(wordSz - i - 1) * width+:width] = mem[instrAddr+i];
       end
    endgenerate
 endmodule

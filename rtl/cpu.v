@@ -15,6 +15,8 @@ module cpu
    wire [3:0]  cmd;
    reg [31:0]  ir;
 
+   initial ir =  {mem0.mem[0], mem0.mem[1], mem0.mem[2], mem0.mem[3]};
+
    decode decode0
      (
       .instr(ir),
@@ -51,6 +53,7 @@ module cpu
       );
 
    reg [31:0]  pc, a, b;
+   initial pc = 0;
    wire [31:0] aluA, aluB, result;
    wire        zero, overflow;
 
@@ -96,7 +99,7 @@ module cpu
       .in1(ffResult)
       );
 
-   memory mem0
+   memory #(.data(instruction)) mem0
      (
       .dOut(dOut),
       .clk(clk),

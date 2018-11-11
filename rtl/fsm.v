@@ -83,12 +83,13 @@ module fsm
    );
 
    reg [4:0]        state;
-   reg [3:0]        ffCmd;
+   wire [3:0]        ffCmd;
+   assign ffCmd = cmd;
    initial state = `IF;
    always @(posedge clk) begin
       case (state)
         `IF : begin
-           ffCmd <= cmd;
+           // ffCmd <= cmd;
            pcSrc <= `PC_SRC_ALU;
            aluSrcA <= `ALU_SRC_A_PC;
            aluSrcB <= `ALU_SRC_B_4;

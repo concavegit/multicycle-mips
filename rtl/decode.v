@@ -40,6 +40,8 @@ module decode
      rt = instr[20:16],
      rs = instr[25:21],
      sxi = {{16{instr[15]}}, instr[15:0]},
+     opcode = instr[31:26],
+     funct = instr[5:0],
      jAddr = {instr[25:0], 2'b0};
 
    always @(opcode, funct) begin
