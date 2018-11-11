@@ -59,11 +59,10 @@
 module fsm
   (
    input            clk,
-                    zero,
-                    ovf,
+                    eq,
    input [3:0]      cmd,
    output reg [2:0] aluOp,
-                    pcSrc,
+   output reg [1:0] pcSrc,
                     aluSrcB,
    output reg       pcWe,
    memWe,
@@ -162,7 +161,7 @@ module fsm
            bWe <= 0;
            irWe <= 0;
            memWe <= 0;
-           pcWe <= zero && !ovf;
+           pcWe <= eq;
            regWe <= 0;
 
            state <= `IF;
@@ -178,7 +177,7 @@ module fsm
            bWe <= 0;
            irWe <= 0;
            memWe <= 0;
-           pcWe <= !zero || ovf;
+           pcWe <= !eq;
            regWe <= 0;
 
            state <= `IF;
