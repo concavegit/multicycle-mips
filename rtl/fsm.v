@@ -100,6 +100,7 @@ module fsm
             `SUB : state = `EX_SUB;
             `ADD : state = `EX_ADD;
             `SLT : state = `EX_SLT;
+            `XORI : state = `EX_XORI;
             default : state = `EX_LWSWADDI;
           endcase
 
