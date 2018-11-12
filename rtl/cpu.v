@@ -9,10 +9,10 @@ module cpu
   #(parameter instruction="mem/data.dat")
    (input clk);
 
-   wire [31:0] sxi;
+   wire [31:0] sxi, dOut;
    wire [4:0]  rd, rt, rs;
    wire [27:0] jAddr28;
-   wire [3:0]  cmd;
+   wire [3:0]  cmd, memCmd;
    reg [31:0]  ir;
 
    initial ir =  {mem0.mem[0], mem0.mem[1], mem0.mem[2], mem0.mem[3]};
@@ -20,12 +20,14 @@ module cpu
    decode decode0
      (
       .instr(ir),
+      .memInstr(dOut),
       .rd(rd),
       .rt(rt),
       .rs(rs),
       .sxi(sxi),
       .jAddr(jAddr28),
-      .cmd(cmd)
+      .cmd(cmd),
+      .memCmd(memCmd)
       );
 
    wire        eq, pcWe, memWe, irWe, aWe, bWe, regWe, regIn, aluSrcA, memIn, dst;
@@ -37,6 +39,7 @@ module cpu
       .clk(clk),
       .eq(eq),
       .cmd(cmd),
+      .memCmd(memCmd),
       .aluOp(aluOp),
       .pcSrc(pcSrc),
       .aluSrcB(aluSrcB),
@@ -87,7 +90,7 @@ module cpu
       .command(aluOp)
       );
 
-   wire [31:0] dOut, memAddr;
+   wire [31:0] memAddr;
    reg [31:0]  ffResult;
    always @(posedge clk) ffResult <= result;
 
@@ -141,7 +144,16 @@ module cpu
 
    wire [31:0] pcIn;
 
-   assign pcIn = pcSrc[1] ? pcSrc[0] ? a : {pc[31:28], jAddr28} : pcSrc[0] ? result : ffResult;
+   // assign pcIn = pcSrc[1] ? pcSrc[0] ? a : {pc[31:28], jAddr28} : pcSrc[0] ? result : ffResult;
+   mux4way pcMux
+     (
+      .out(pcIn),
+      .sel(pcSrc),
+      .in0(ffResult),
+      .in1(result),
+      .in2({pc[31:28], jAddr28}),
+      .in3(a)
+      );
 
    always @(posedge clk) begin
       if (aWe) a <= dOut0;

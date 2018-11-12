@@ -10,15 +10,17 @@
 module decode
   (
    input [31:0]     instr,
+   input [31:0]     memInstr,
    output [4:0]     rd,
                     rt,
                     rs,
    output [31:0]    sxi,
    output [27:0]    jAddr,
-   output reg [3:0] cmd
+   output reg [3:0] cmd,
+   output reg [3:0] memCmd
    );
 
-   wire [5:0]       opcode, funct;
+   wire [5:0]       opcode, funct, memOpcode, memFunct;
 
    localparam
      LW = 6'h23,
@@ -42,7 +44,29 @@ module decode
      sxi = {{16{instr[15]}}, instr[15:0]},
      opcode = instr[31:26],
      funct = instr[5:0],
-     jAddr = {instr[25:0], 2'b0};
+     jAddr = {instr[25:0], 2'b0},
+     memOpcode = memInstr[31:26],
+     memFunct = memInstr[5:0];
+
+   always @(memOpcode, memFunct) begin
+      case (memOpcode)
+        LW : memCmd = `LW;
+        SW : memCmd = `SW;
+        J : memCmd = `J;
+        JAL : memCmd = `JAL;
+        BEQ : memCmd = `BEQ;
+        BNE : memCmd = `BNE;
+        XORI : memCmd = `XORI;
+        ADDI : memCmd = `ADDI;
+        default :
+          case (memFunct)
+            R_JR : memCmd = `JR;
+            R_ADD : memCmd = `ADD;
+            R_SUB : memCmd = `SUB;
+            R_SLT : memCmd = `SLT;
+          endcase
+      endcase
+   end
 
    always @(opcode, funct) begin
       case (opcode)

@@ -67,6 +67,7 @@ module fsm
    input            clk,
                     eq,
    input [3:0]      cmd,
+                    memCmd,
    output reg [2:0] aluOp,
    output reg [1:0] pcSrc,
                     aluSrcB,
@@ -87,11 +88,11 @@ module fsm
 
    // Compute the current state
    initial state = 0;
-   always @(prevState, cmd) begin
+   always @(prevState, cmd, memCmd) begin
       case (prevState)
         `IF :
-          if (cmd == `BNE || cmd == `BEQ) state = `ID_B;
-          else if (cmd == `J || cmd == `JAL) state = `ID_J;
+          if (memCmd == `BNE || memCmd == `BEQ) state = `ID_B;
+          else if (memCmd == `J || memCmd == `JAL) state = `ID_J;
           else state = `ID_X;
         `ID_B : state = (cmd == `BEQ) ? `EX_BEQ : `EX_BNE;
         `ID_J : state = (cmd == `J) ? `IF : `EX_BNE;
