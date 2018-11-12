@@ -39,6 +39,8 @@
 `define WB_SUBADDSLT 15
 `define WB_ADDIXORI 16
 `define WB_LW 17
+`define WB_BEQ 18
+`define WB_BNE 19
 
 `define ALU_ADD 0
 `define ALU_SUB 1
@@ -80,7 +82,8 @@ module fsm
    regIn,
    aluSrcA,
    memIn,
-   dst
+   dst,
+   aluResWe
    );
 
    reg [4:0]        prevState;
@@ -106,8 +109,8 @@ module fsm
             default : state = `EX_LWSWADDI;
           endcase
 
-        `EX_BEQ : state = `IF;
-        `EX_BNE : state = `IF;
+        `EX_BEQ : state = `WB_BEQ;
+        `EX_BNE : state = `WB_BNE;
         `EX_JR : state = `IF;
         `EX_SUB : state = `WB_SUBADDSLT;
         `EX_ADD : state = `WB_SUBADDSLT;
@@ -139,6 +142,7 @@ module fsm
            memWe <= 0;
            pcWe <= 1;
            regWe <= 0;
+           aluResWe <= 1;
         end
 
         `ID_B : begin
@@ -152,6 +156,7 @@ module fsm
            memWe <= 0;
            pcWe <= 0;
            regWe <= 0;
+           aluResWe <= 1;
         end
 
         `ID_J : begin
@@ -165,7 +170,8 @@ module fsm
            irWe <= 0;
            memWe <= 0;
            pcWe <= 1;
-           regWe <= 0;
+           regWe <=0;
+           aluResWe <= 1;
         end
 
         `ID_X : begin
@@ -174,7 +180,8 @@ module fsm
            irWe <= 0;
            memWe <= 0;
            pcWe <= 0;
-           regWe <= 0;
+           regWe <=0;
+           aluResWe <= 1;
         end
 
         `EX_BEQ : begin
@@ -187,8 +194,9 @@ module fsm
            bWe <= 0;
            irWe <= 0;
            memWe <= 0;
-           pcWe <= eq;
-           regWe <= 0;
+           pcWe <= 0;
+           regWe <=0;
+           aluResWe <= 0;
         end
 
         `EX_BNE : begin
@@ -201,8 +209,9 @@ module fsm
            bWe <= 0;
            irWe <= 0;
            memWe <= 0;
-           pcWe <= !eq;
-           regWe <= 0;
+           pcWe <= 0;
+           regWe <=0;
+           aluResWe <= 0;
         end
 
         `EX_JR : begin
@@ -212,7 +221,8 @@ module fsm
            irWe <= 0;
            memWe <= 0;
            pcWe <= 1;
-           regWe <= 0;
+           regWe <=0;
+           aluResWe <= 1;
         end
 
         `EX_SUB : begin
@@ -225,7 +235,8 @@ module fsm
            irWe <= 0;
            memWe <= 0;
            pcWe <= 0;
-           regWe <= 0;
+           regWe <=0;
+           aluResWe <= 1;
         end
 
         `EX_ADD : begin
@@ -238,7 +249,8 @@ module fsm
            irWe <= 0;
            memWe <= 0;
            pcWe <= 0;
-           regWe <= 0;
+           regWe <=0;
+           aluResWe <= 1;
         end
 
         `EX_SLT : begin
@@ -251,7 +263,8 @@ module fsm
            irWe <= 0;
            memWe <= 0;
            pcWe <= 0;
-           regWe <= 0;
+           regWe <=0;
+           aluResWe <= 1;
         end
 
         `EX_XORI : begin
@@ -264,7 +277,8 @@ module fsm
            irWe <= 0;
            memWe <= 0;
            pcWe <= 0;
-           regWe <= 0;
+           regWe <=0;
+           aluResWe <= 1;
         end
 
         `EX_LWSWADDI : begin
@@ -277,7 +291,8 @@ module fsm
            irWe <= 0;
            memWe <= 0;
            pcWe <= 0;
-           regWe <= 0;
+           regWe <=0;
+           aluResWe <= 1;
         end
 
         `MEM_LW : begin
@@ -288,7 +303,8 @@ module fsm
            irWe <= 0;
            memWe <= 0;
            pcWe <= 0;
-           regWe <= 0;
+           regWe <=0;
+           aluResWe <= 1;
         end
 
         `MEM_SW : begin
@@ -299,7 +315,8 @@ module fsm
            irWe <= 0;
            memWe <= 1;
            pcWe <= 0;
-           regWe <= 0;
+           regWe <=0;
+           aluResWe <= 1;
         end
 
         `WB_JAL : begin
@@ -348,6 +365,26 @@ module fsm
            memWe <= 0;
            pcWe <= 0;
            regWe <= 1;
+        end
+
+        `WB_BEQ : begin
+           aWe <= 0;
+           bWe <= 0;
+           irWe <= 0;
+           memWe <= 0;
+           pcWe <= eq;
+           regWe <=0;
+           aluResWe <= 1;
+        end
+
+        `WB_BNE : begin
+           aWe <= 0;
+           bWe <= 0;
+           irWe <= 0;
+           memWe <= 0;
+           pcWe <= !eq;
+           regWe <=0;
+           aluResWe <= 1;
         end
       endcase
       prevState <= state;

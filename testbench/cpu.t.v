@@ -7,7 +7,7 @@ module cputest();
       counter = 0;
    end
 
-   cpu #(.instruction("unit_tests/add.dat")) dut(clk);
+   cpu #(.instruction("unit_tests/nsum2.dat")) dut(clk);
    always #1 clk = ~clk;
 
    always #2 begin

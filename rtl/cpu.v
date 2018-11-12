@@ -30,7 +30,7 @@ module cpu
       .memCmd(memCmd)
       );
 
-   wire        eq, pcWe, memWe, irWe, aWe, bWe, regWe, regIn, aluSrcA, memIn, dst;
+   wire        eq, pcWe, memWe, irWe, aWe, bWe, regWe, regIn, aluSrcA, memIn, dst, aluResWe;
    wire [2:0]  aluOp;
    wire [1:0]  pcSrc, aluSrcB;
 
@@ -52,7 +52,8 @@ module cpu
       .regIn(regIn),
       .aluSrcA(aluSrcA),
       .memIn(memIn),
-      .dst(dst)
+      .dst(dst),
+      .aluResWe(aluResWe)
       );
 
    reg [31:0]  pc, a, b;
@@ -92,7 +93,7 @@ module cpu
 
    wire [31:0] memAddr;
    reg [31:0]  ffResult;
-   always @(posedge clk) ffResult <= result;
+   always @(posedge clk) if (aluResWe) ffResult <= result;
 
    mux memAddrMux
      (
