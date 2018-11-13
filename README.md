@@ -62,7 +62,7 @@ Some performance/area analysis of your design. This can be for the full processo
 
 - Regfile: We write values to all registers with both write enable possibilities, checking for changes and consistencies with asserts. We also make sure that $zero is always zero in these processes. We also made sure that both read and write ports were decoupled via asserts.
 
-- ALU: We used a testbench which checks 1024 cases on all 8 operations on all 8 configurations of positive or negative inputs and outputs. This is a verilator testbench.
+- ALU: We used a testbench which checks 49 cases for each of the 8 operations. The 49 cases tested all possible pairs of the following 7 inputs, (2^31)-1, (2^31)-2, -2^31, (-2^31) + 1, 0, 1, and -1. This is a verilator testbench.
 
 - CPU: We used a summation testbench, knowing that the final value of $v0 should be 120, the sum of natural numbers to 15.
 
