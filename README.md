@@ -5,7 +5,7 @@
 
  Description and block diagram of  our architecture.
 
-![alt text](https://github.com/concavegit/multicycle-mips/blob/master/cpu bloc.png)
+![alt text](https://github.com/concavegit/multicycle-mips/blob/master/New%20Doc%202018-11-13%2012.13.11.jpg)
 
 This the block diagram of our multi cycle cycle CPU. All the red wires are control signals coming from the decoder. 
 
