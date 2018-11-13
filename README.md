@@ -3,12 +3,21 @@
 
 
 
- Description and block diagram of  processor architecture.
+ Description and block diagram of  our architecture.
+
+![alt text](https://github.com/concavegit/multicycle-mips/blob/master/cpu bloc.png)
+
+This the block diagram of our multi cycle cycle CPU. All the red wires are control signals coming from the decoder. 
+
+**Our FSM state diagram**
+
+This is based off our CPU structure, we have merged as many states as possible without effecting the clock cycle or decoder instructions.
 
 ![alt text](https://github.com/concavegit/multicycle-mips/blob/master/Untitled%20Diagram.png)
 
-This the block diagram of our single cycle CPU. All the red wires are control signals coming from the decoder. 
+
 For an example insturction **addi $t0, $t0, 2**
+
 
 The relevant control signals would be set in the following way by the decoder
 
