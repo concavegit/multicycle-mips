@@ -5,8 +5,7 @@
 
  Description and block diagram of  processor architecture.
 
-![alt text](https://github.com/concavegit/mips-subset/blob/master/CPU%20schematic.jpg
-)
+![alt text](https://github.com/concavegit/multicycle-mips/blob/master/Untitled%20Diagram.png)
 
 This the block diagram of our single cycle CPU. All the red wires are control signals coming from the decoder. 
 For an example insturction **addi $t0, $t0, 2**
