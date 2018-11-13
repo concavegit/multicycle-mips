@@ -19,25 +19,22 @@ This is based off our CPU structure, we have merged as many states as possible w
 For an example insturction **addi $t0, $t0, 2**
 
 
-The relevant control signals would be set in the following way by the decoder
+The relevant state progression would be this way
 
 
-- **RS** = address of $t0
+We start off at common for all **IF**
 
 
-- **ALU_B_SRC_CTRL** = 1(to choose immediate instead of the data in register RT)
+And then move to the **ID** which is common for ADD,SUB,ADDI and other similar instructions.
 
 
-- **reg_we**= 1 ( write enable would be 1)
+We then go to the add **EX** state which is the only unique state for this instruction.
 
 
-- **reg_write_address** = address of $t0
+Finnaly end at a **WB** which is common for all executional instructions which write back to the register.
 
 
-- **PC_SRC_CTRL** = 00(Increments PC by 4 as it should as there is no branch or jump command)
 
-
-- **dm_we** = 0 (as the data memory would not be written to)
 
 
 
